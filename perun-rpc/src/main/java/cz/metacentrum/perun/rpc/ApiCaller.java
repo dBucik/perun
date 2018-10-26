@@ -1,20 +1,9 @@
 package cz.metacentrum.perun.rpc;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-
 import cz.metacentrum.perun.cabinet.api.CabinetManager;
 import cz.metacentrum.perun.cabinet.model.Category;
 import cz.metacentrum.perun.cabinet.model.Publication;
 import cz.metacentrum.perun.cabinet.model.Thanks;
-import cz.metacentrum.perun.core.api.PerunClient;
-import cz.metacentrum.perun.registrar.model.Application;
-import cz.metacentrum.perun.voot.VOOT;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
 import cz.metacentrum.perun.controller.service.GeneralServiceManager;
 import cz.metacentrum.perun.controller.service.PropagationStatsReader;
 import cz.metacentrum.perun.core.api.Attribute;
@@ -37,6 +26,7 @@ import cz.metacentrum.perun.core.api.MembersManager;
 import cz.metacentrum.perun.core.api.Owner;
 import cz.metacentrum.perun.core.api.OwnersManager;
 import cz.metacentrum.perun.core.api.Perun;
+import cz.metacentrum.perun.core.api.PerunClient;
 import cz.metacentrum.perun.core.api.PerunPrincipal;
 import cz.metacentrum.perun.core.api.PerunSession;
 import cz.metacentrum.perun.core.api.RTMessagesManager;
@@ -63,7 +53,15 @@ import cz.metacentrum.perun.notif.entities.PerunNotifTemplate;
 import cz.metacentrum.perun.notif.entities.PerunNotifTemplateMessage;
 import cz.metacentrum.perun.notif.managers.PerunNotifNotificationManager;
 import cz.metacentrum.perun.registrar.RegistrarManager;
+import cz.metacentrum.perun.registrar.model.Application;
 import cz.metacentrum.perun.rpc.deserializer.Deserializer;
+import cz.metacentrum.perun.voot.VOOT;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.ServletContext;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ApiCaller calls Perun manager methods.

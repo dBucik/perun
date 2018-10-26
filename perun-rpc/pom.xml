@@ -146,6 +146,12 @@
 			<version>${project.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>cz.metacentrum.perun</groupId>
+			<artifactId>perun-finder</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- OTHERS -->
 
 		<dependency>
@@ -155,6 +161,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-	</dependencies>
+    </dependencies>
 
 </project>

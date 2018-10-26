@@ -10,6 +10,7 @@ import cz.metacentrum.perun.core.api.User;
 import cz.metacentrum.perun.core.api.exceptions.InternalErrorException;
 import cz.metacentrum.perun.core.api.exceptions.AttributeNotExistsException;
 import cz.metacentrum.perun.core.api.exceptions.WrongAttributeAssignmentException;
+import cz.metacentrum.perun.finder.persistence.models.entities.PerunEntity;
 
 import java.util.Calendar;
 import java.util.List;
@@ -159,4 +160,6 @@ public interface SearcherBl {
 	 * @throws WrongAttributeAssignmentException wrong attribute assignment
 	 */
 	List<Resource> getResources(PerunSession sess, Map<String, String> attributesWithSearchingValues) throws InternalErrorException, AttributeNotExistsException, WrongAttributeAssignmentException;
+
+	List<PerunEntity> performSearch(PerunSession sess, String query) throws InternalErrorException;
 }

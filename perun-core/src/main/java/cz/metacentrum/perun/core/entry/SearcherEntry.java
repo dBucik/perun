@@ -25,6 +25,7 @@ import cz.metacentrum.perun.core.bl.SearcherBl;
 
 import java.util.*;
 
+import cz.metacentrum.perun.finder.persistence.models.entities.PerunEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,6 +181,15 @@ public class SearcherEntry implements Searcher {
 		}
 
 		return getPerunBl().getSearcherBl().getMembersByGroupExpiration(sess, group, operator, date);
+	}
+
+	@Override
+	public List<PerunEntity> performSearch(PerunSession sess, String query) throws PrivilegeException, InternalErrorException {
+		if (!AuthzResolver.isAuthorized(sess, Role.PERUNADMIN)) {
+			throw new PrivilegeException(sess, "performSearch");
+		}
+
+		return getPerunBl().getSearcherBl().performSearch(sess, query);
 	}
 
 	public SearcherBl getSearcherBl() {

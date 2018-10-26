@@ -5,6 +5,7 @@ import cz.metacentrum.perun.core.api.exceptions.InternalErrorException;
 import cz.metacentrum.perun.core.api.exceptions.PrivilegeException;
 import cz.metacentrum.perun.core.api.exceptions.VoNotExistsException;
 import cz.metacentrum.perun.core.api.exceptions.WrongAttributeAssignmentException;
+import cz.metacentrum.perun.finder.persistence.models.entities.PerunEntity;
 
 import java.util.Calendar;
 import java.util.List;
@@ -173,4 +174,6 @@ public interface Searcher {
 	 * @throws PrivilegeException insufficient permission
 	 */
 	List<Member> getMembersByGroupExpiration(PerunSession sess, Group group, String operator, Calendar date) throws PrivilegeException, InternalErrorException;
+
+	List<PerunEntity> performSearch(PerunSession sess, String query) throws PrivilegeException, InternalErrorException;
 }

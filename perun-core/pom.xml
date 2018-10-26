@@ -244,6 +244,12 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>cz.metacentrum.perun</groupId>
+			<artifactId>perun-finder</artifactId>
+			<version>3.3.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<profiles>

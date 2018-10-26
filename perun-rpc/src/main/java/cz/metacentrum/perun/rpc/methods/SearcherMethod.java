@@ -113,5 +113,13 @@ public enum SearcherMethod implements ManagerMethod {
 			return ac.getSearcher().getResources(ac.getSession(),
 					parms.read("attributesWithSearchingValues", LinkedHashMap.class));
 		}
+	},
+
+	performSearch {
+		@Override
+		public Object call(ApiCaller ac, Deserializer parms) throws PerunException {
+			return ac.getSearcher().performSearch(ac.getSession(),
+					parms.readString("input"));
+		}
 	};
 }
