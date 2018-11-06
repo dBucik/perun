@@ -21,6 +21,8 @@ import cz.metacentrum.perun.finder.persistence.models.PerunAttribute;
 import cz.metacentrum.perun.finder.persistence.models.Query;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunEntity;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunRichEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -44,7 +46,12 @@ import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.RESO
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.USER;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.USER_FACILITY;
 
-public class FinderDAOImpl implements FinderDAO {
+/**
+ * Implementation of GeneralSearcherDAO
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
+public class GeneralSearcherDAOImpl implements GeneralSearcherDAO {
 
 	private NamedParameterJdbcTemplate template;
 	private static final ExtSourceMapper EXT_SOURCE_MAPPER = new ExtSourceMapper();
@@ -168,14 +175,7 @@ public class FinderDAOImpl implements FinderDAO {
 				break;
 		}
 
-		List<Query> queriesToExecute = new ArrayList<>();
-		for (Query q: innerQueries) {
-			if (lookFor.contains(q.getEntityType())) {
-				queriesToExecute.add(q);
-			}
-		}
-
-		return queriesToExecute;
+		return getQueriesToExecute(innerQueries, lookFor);
 	}
 
 	private Set<Integer> getIdsForSecondaryKey(String secondaryKey, List<Query> innerQueries) {
@@ -200,6 +200,10 @@ public class FinderDAOImpl implements FinderDAO {
 				break;
 		}
 
+		return getQueriesToExecute(innerQueries, lookFor);
+	}
+
+	private List<Query> getQueriesToExecute(List<Query> innerQueries, List<PerunEntityType> lookFor) {
 		List<Query> queriesToExecute = new ArrayList<>();
 		for (Query q: innerQueries) {
 			if (lookFor.contains(q.getEntityType())) {

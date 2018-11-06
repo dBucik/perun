@@ -14,6 +14,11 @@ import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.GROU
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.MEMBER;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.MEMBER_GROUP;
 
+/**
+ * Input from user for Member Group relation.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class MemberGroupInput extends RelationInputEntity {
 
 	private static final PerunEntityType TYPE = MEMBER_GROUP;

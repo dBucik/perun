@@ -1,10 +1,16 @@
 package cz.metacentrum.perun.finder.persistence.models.entities.basic;
 
+import cz.metacentrum.perun.finder.persistence.enums.PerunEntityType;
 import cz.metacentrum.perun.finder.persistence.models.PerunAttribute;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunRichEntity;
 
 import java.util.Map;
 
+/**
+ * Model of Resource entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class Resource extends PerunRichEntity {
 
 	private Integer facilityId;
@@ -13,7 +19,7 @@ public class Resource extends PerunRichEntity {
 	private Integer voId;
 
 	public Resource(Integer id, Integer facilityId, String name, String description, Integer voId, Map<String, PerunAttribute> attributes, Integer foreignId) {
-		super(id, attributes, foreignId);
+		super(id, attributes, foreignId, PerunEntityType.RESOURCE);
 		this.facilityId = facilityId;
 		this.name = name;
 		this.description = description;

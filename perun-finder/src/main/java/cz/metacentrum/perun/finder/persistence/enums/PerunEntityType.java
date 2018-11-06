@@ -1,5 +1,10 @@
 package cz.metacentrum.perun.finder.persistence.enums;
 
+/**
+ * Enum of entities from Perun
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public enum PerunEntityType {
 
 	EXT_SOURCE,

@@ -12,18 +12,42 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * Basic model for input from user specifying relation.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public abstract class RelationInputEntity extends InputEntity {
 
 	protected RelationInputEntity(PerunEntityType entityType, boolean isTopLevel, List<InputAttribute> core, List<InputAttribute> attributes, List<String> attrNames, List<InputEntity> innerInputs) throws IllegalRelationException {
 		super(entityType, isTopLevel, core, attributes, attrNames, innerInputs);
 	}
 
+	/**
+	 * Build SELECT and FROM parts
+	 * @param sourceType entity on higher level in the query
+	 * @param isSimple TRUE if query does not have to fetch attributes
+	 * @return String containing SELECT and FROM parts
+	 * @throws IncorrectSourceEntityException source entity is not valid one for the relation
+	 */
 	public abstract String buildSelectFrom(PerunEntityType sourceType, boolean isSimple) throws IncorrectSourceEntityException;
 
+	/**
+	 * Get name for the first entity of relation
+	 * @return name of the key
+	 */
 	protected abstract String getPrimaryKey();
 
+	/**
+	 * Get name for the second entity of relation
+	 * @return name of the key
+	 */
 	protected abstract String getSecondaryKey();
 
+	/**
+	 * Get DB table name for the relation
+	 * @return name of table
+	 */
 	protected abstract String getRelationTable();
 
 	@Override
@@ -36,6 +60,13 @@ public abstract class RelationInputEntity extends InputEntity {
 		return query;
 	}
 
+	/**
+	 * Get SELECT and FROM parts of the query
+	 * @param isSimple TRUE if the query does not have to query attributes
+	 * @param select SELECT part
+	 * @param join JOIN part
+	 * @return String with SELECT and FROM parts
+	 */
 	public String getSelectFrom(boolean isSimple, String select, String join) {
 		String relationTable = this.getRelationTable();
 		String attrNamesTable = this.getAttrNamesTable();
@@ -58,6 +89,7 @@ public abstract class RelationInputEntity extends InputEntity {
 		return queryString.toString();
 	}
 
+	@Override
 	public Query toQuery(PerunEntityType sourceType) throws IncorrectCoreAttributeTypeException, IncorrectSourceEntityException {
 		boolean isSimple = PerunEntityType.isSimpleEntity(this.getEntityType()) && this.isSimpleQuery();
 		Query query = this.initQuery();
@@ -85,6 +117,13 @@ public abstract class RelationInputEntity extends InputEntity {
 		return query;
 	}
 
+	/**
+	 * Build WHERE part
+	 * @param query query object
+	 * @param core core attributes
+	 * @param attrNames names of attributes that should be fetched
+	 * @return String containing WHERE part
+	 */
 	private String buildWhere(Query query, List<InputAttribute> core, List<String> attrNames) {
 		if ((core == null || core.isEmpty()) && (attrNames == null || attrNames.isEmpty())) {
 			return NO_VALUE;

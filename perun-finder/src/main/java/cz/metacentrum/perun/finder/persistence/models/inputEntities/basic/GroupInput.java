@@ -18,6 +18,11 @@ import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.MEMB
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.RESOURCE;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.VO;
 
+/**
+ * Input from user for Group entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class GroupInput extends BasicInputEntity {
 
 	private static final PerunEntityType TYPE = GROUP;

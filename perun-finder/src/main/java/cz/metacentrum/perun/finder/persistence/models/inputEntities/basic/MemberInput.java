@@ -18,6 +18,11 @@ import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.RESO
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.USER;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.VO;
 
+/**
+ * Input from user for Member entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class MemberInput extends BasicInputEntity {
 
 	private static final PerunEntityType TYPE = MEMBER;

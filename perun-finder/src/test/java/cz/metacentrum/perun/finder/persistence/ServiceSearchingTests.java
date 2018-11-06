@@ -3,10 +3,10 @@ package cz.metacentrum.perun.finder.persistence;
 import com.opentable.db.postgres.junit.EmbeddedPostgresRules;
 import com.opentable.db.postgres.junit.SingleInstancePostgresRule;
 import cz.metacentrum.perun.finder.DBUtils;
-import cz.metacentrum.perun.finder.persistence.data.FinderDAOImpl;
+import cz.metacentrum.perun.finder.persistence.data.GeneralSearcherDAOImpl;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunEntity;
 import cz.metacentrum.perun.finder.persistence.models.entities.basic.Service;
-import cz.metacentrum.perun.finder.service.FinderManager;
+import cz.metacentrum.perun.finder.service.GeneralSearcherManager;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,7 +33,7 @@ public class ServiceSearchingTests {
 	@ClassRule
 	public static final SingleInstancePostgresRule pg = EmbeddedPostgresRules.singleInstance();
 
-	private static FinderManager finderManager;
+	private static GeneralSearcherManager generalSearcherManager;
 	private static final Resource tablesFile = new ClassPathResource("db_init.sql");
 	private static final Resource dataFile = new ClassPathResource("db_init_data.sql");
 
@@ -46,9 +46,9 @@ public class ServiceSearchingTests {
 		DataSource ds = pg.getEmbeddedPostgres().getPostgresDatabase();
 		DBUtils.setUpDatabaseTables(ds, tablesFile, dataFile);
 		JdbcTemplate template = new JdbcTemplate(ds);
-		FinderDAOImpl dao = new FinderDAOImpl();
+		GeneralSearcherDAOImpl dao = new GeneralSearcherDAOImpl();
 		dao.setTemplate(template);
-		finderManager = new FinderManager(dao);
+		generalSearcherManager = new GeneralSearcherManager(dao);
 	}
 
 	@Before
@@ -103,7 +103,7 @@ public class ServiceSearchingTests {
 	public void findServiceByIdTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"id\" : {\"value\": [1]} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -113,7 +113,7 @@ public class ServiceSearchingTests {
 	public void findServiceByNameTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"name\" : {\"value\": [\"service1\"]} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -123,7 +123,7 @@ public class ServiceSearchingTests {
 	public void findServiceByDescriptionTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"description\" : {\"value\": [\"dsc1\"]} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -133,7 +133,7 @@ public class ServiceSearchingTests {
 	public void findServiceByDelayTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"delay\" : {\"value\": [1]} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -143,7 +143,7 @@ public class ServiceSearchingTests {
 	public void findServiceByRecurrenceTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"recurrence\" : {\"value\": [1]} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -153,7 +153,7 @@ public class ServiceSearchingTests {
 	public void findServiceByEnabledTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"enabled\" : {\"value\": [true]} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -163,7 +163,7 @@ public class ServiceSearchingTests {
 	public void findServiceByScriptTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"script\" : {\"value\": [\"script1\"]}}";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -173,7 +173,7 @@ public class ServiceSearchingTests {
 	public void findAllServicesTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\"}";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(3, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2, EXPECTED1));
@@ -183,7 +183,7 @@ public class ServiceSearchingTests {
 	public void findServiceByIdLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"id\" : {\"value\": [2], \"matchLike\": true} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -193,7 +193,7 @@ public class ServiceSearchingTests {
 	public void findServiceByNameLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"name\" : {\"value\": [\"service2\"], \"matchLike\": true} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -203,7 +203,7 @@ public class ServiceSearchingTests {
 	public void findServiceByDescriptionLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"description\" : {\"value\": [\"dsc2\"], \"matchLike\": true} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -213,7 +213,7 @@ public class ServiceSearchingTests {
 	public void findServiceByDelayLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"delay\" : {\"value\": [2], \"matchLike\": true} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -223,7 +223,7 @@ public class ServiceSearchingTests {
 	public void findServiceByRecurrenceLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"recurrence\" : {\"value\": [2], \"matchLike\": true} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -233,7 +233,7 @@ public class ServiceSearchingTests {
 	public void findServiceByEnabledLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"enabled\" : {\"value\": [false], \"matchLike\": true} }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -243,7 +243,7 @@ public class ServiceSearchingTests {
 	public void findServiceByScriptLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"SERVICE\", \"script\" : {\"value\": [\"script2\"], \"matchLike\": true}}";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -255,7 +255,7 @@ public class ServiceSearchingTests {
 				"{ \"entityName\" : \"resource\", \"id\" : {\"value\": [1]} }" +
 				"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));

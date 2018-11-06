@@ -19,6 +19,11 @@ import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.RESO
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.SERVICE;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.VO;
 
+/**
+ * Input from user for Resource entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class ResourceInput extends BasicInputEntity {
 
 	private static final PerunEntityType TYPE = RESOURCE;

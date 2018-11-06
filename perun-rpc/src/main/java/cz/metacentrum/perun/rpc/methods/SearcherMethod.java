@@ -115,10 +115,10 @@ public enum SearcherMethod implements ManagerMethod {
 		}
 	},
 
-	performSearch {
+	generalSearch {
 		@Override
 		public Object call(ApiCaller ac, Deserializer parms) throws PerunException {
-			return ac.getSearcher().performSearch(ac.getSession(),
+			return ac.getSearcher().generalSearch(ac.getSession(),
 					parms.readString("input"));
 		}
 	};

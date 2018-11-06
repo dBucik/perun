@@ -87,6 +87,21 @@ public class MemberDetailTabItem implements TabItem, TabItemWithUrl {
 		this.groupId = groupId;
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param memberId RichMember ID
+	 */
+	public MemberDetailTabItem(int memberId){
+		this.memberId = memberId;
+		this.tabPanel = new TabPanelForTabItems(this);
+		new GetEntityById(PerunEntity.RICH_MEMBER, memberId, new JsonCallbackEvents(){
+			public void onFinished(JavaScriptObject jso){
+				member = jso.cast();
+			}
+		}).retrieveData();
+	}
+
 	public boolean isPrepared(){
 		return !(member == null);
 	}

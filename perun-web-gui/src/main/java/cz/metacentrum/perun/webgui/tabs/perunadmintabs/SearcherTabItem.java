@@ -1,23 +1,42 @@
 package cz.metacentrum.perun.webgui.tabs.perunadmintabs;
 
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.LinkElement;
+import com.google.gwt.dom.client.ParagraphElement;
+import com.google.gwt.dom.client.ScriptElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import cz.metacentrum.perun.webgui.client.PerunWebSession;
 import cz.metacentrum.perun.webgui.client.UiElements;
 import cz.metacentrum.perun.webgui.client.mainmenu.MainMenu;
+import cz.metacentrum.perun.webgui.client.resources.AceEditor;
 import cz.metacentrum.perun.webgui.client.resources.PerunEntity;
 import cz.metacentrum.perun.webgui.client.resources.SmallIcons;
 import cz.metacentrum.perun.webgui.client.resources.TableSorter;
 import cz.metacentrum.perun.webgui.json.JsonCallbackEvents;
 import cz.metacentrum.perun.webgui.json.JsonUtils;
+import cz.metacentrum.perun.webgui.json.searcher.GeneralEntityFinder;
 import cz.metacentrum.perun.webgui.json.searcher.GetFacilities;
 import cz.metacentrum.perun.webgui.json.searcher.GetMembers;
 import cz.metacentrum.perun.webgui.json.searcher.GetResources;
@@ -29,6 +48,7 @@ import cz.metacentrum.perun.webgui.model.PerunError;
 import cz.metacentrum.perun.webgui.model.Resource;
 import cz.metacentrum.perun.webgui.model.User;
 import cz.metacentrum.perun.webgui.model.VirtualOrganization;
+import cz.metacentrum.perun.webgui.model.finder.FinderObject;
 import cz.metacentrum.perun.webgui.tabs.PerunAdminTabs;
 import cz.metacentrum.perun.webgui.tabs.TabItem;
 import cz.metacentrum.perun.webgui.tabs.TabItemWithUrl;
@@ -37,6 +57,7 @@ import cz.metacentrum.perun.webgui.tabs.facilitiestabs.FacilityDetailTabItem;
 import cz.metacentrum.perun.webgui.tabs.memberstabs.MemberDetailTabItem;
 import cz.metacentrum.perun.webgui.tabs.resourcestabs.ResourceDetailTabItem;
 import cz.metacentrum.perun.webgui.tabs.userstabs.UserDetailTabItem;
+import cz.metacentrum.perun.webgui.widgets.CustomButton;
 import cz.metacentrum.perun.webgui.widgets.ListBoxWithObjects;
 import cz.metacentrum.perun.webgui.widgets.PerunSearchParametersWidget;
 import cz.metacentrum.perun.webgui.widgets.TabMenu;
@@ -73,7 +94,8 @@ public class SearcherTabItem implements TabItem, TabItemWithUrl {
 	/**
 	 * Creates a tab instance
 	 */
-	public SearcherTabItem(){ }
+	public SearcherTabItem(){
+	}
 
 	public boolean isPrepared(){
 		return true;
@@ -98,6 +120,7 @@ public class SearcherTabItem implements TabItem, TabItemWithUrl {
 		final SimplePanel sp1 = new SimplePanel(); // facilities
 		final SimplePanel sp2 = new SimplePanel(); // members
 		final SimplePanel sp3 = new SimplePanel(); // resources
+		final SimplePanel sp4 = new SimplePanel(); // finder
 
 		session.getUiElements().resizeSmallTabPanel(tabPanel, 100, this);
 
@@ -105,6 +128,7 @@ public class SearcherTabItem implements TabItem, TabItemWithUrl {
 		tabPanel.add(sp2, "Members");
 		tabPanel.add(sp1, "Facilities");
 		tabPanel.add(sp3, "Resources");
+		tabPanel.add(sp4, "General Finder");
 
 		sp0.setWidget(loadUsersTab());
 
@@ -128,6 +152,10 @@ public class SearcherTabItem implements TabItem, TabItemWithUrl {
 				} else if (3 == event.getSelectedItem()) {
 					if (sp3.getWidget() == null) {
 						sp3.setWidget(loadResourcesTab());
+					}
+				} else if (4 == event.getSelectedItem()) {
+					if (sp4.getWidget() == null) {
+						sp4.setWidget(loadGeneralSearcherTab());
 					}
 				}
 			}
@@ -363,6 +391,97 @@ public class SearcherTabItem implements TabItem, TabItemWithUrl {
 
 	}
 
+	private Widget loadGeneralSearcherTab() {
+		AceEditor.INSTANCE.aceCss().ensureInjected();
+		TextResource aceInitJs = AceEditor.INSTANCE.aceJsInit();
+
+		// request
+		final GeneralEntityFinder request = new GeneralEntityFinder();
+		Label label = new Label();
+		label.setText("Type in your query");
+		label.getElement().setId("prompt_label");
+
+		TextArea ta = new TextArea();
+		ta.getElement().setAttribute("hidden", "hidden");
+		ta.getElement().setId("inputQuery");
+
+		HTML editorContainer = new HTML("<div id=\"editorWrap\"><div id=\"editor\"></div></div>");
+		editorContainer.setWidth("50%");
+		editorContainer.getElement().getStyle().setFloat(Style.Float.LEFT);
+
+		Label example = new Label();
+		example.getElement().setInnerHTML("<pre>{<br>" +
+			"    \"entityName\": \"VO\",<br>" +
+			"    \"id\": {\"value\": [1]},<br>" +
+			"    \"shortName\": {\"value\": [\"vo1\"]},<br>" +
+			"    \"name\": {\"value\": [\"virtual_organization1\"]},<br>" +
+			"    \"attributes\": [<br>" +
+			"        {<br>" +
+			"            \"name\": \"attribute1\",<br>" +
+			"            \"value\": [1]<br>" +
+			"        }<br>" +
+			"    ],<br>" +
+			"    \"attributeNames\": [<br>" +
+			"        \"attribute2\"<br>" +
+			"    ],<br>" +
+			"    \"relations\": [<br>" +
+			"        {<br>" +
+			"            \"entityName\": \"MEMBER\"" +
+			"        }<br>" +
+			"    ]<br>" +
+			"}</pre>");
+		example.setWidth("49%");
+		example.getElement().getStyle().setFloat(Style.Float.LEFT);
+
+		FlowPanel fp = new FlowPanel();
+		fp.setSize("100%", "40%");
+		fp.add(editorContainer);
+		fp.add(example);
+
+		// MAIN TAB PANEL
+		VerticalPanel firstTabPanel = new VerticalPanel();
+		firstTabPanel.setSize("100%", "100%");
+		firstTabPanel.add(label);
+		firstTabPanel.add(ta);
+		firstTabPanel.add(fp);
+
+		ScriptInjector.fromUrl("https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js")
+				.setCallback(new Callback<Void, Exception>() {
+					@Override
+					public void onFailure(Exception e) {
+					}
+
+					@Override
+					public void onSuccess(Void aVoid) {
+						injectScript(aceInitJs.getText());
+					}
+				})
+				.setRemoveTag(false)
+				.setWindow(ScriptInjector.TOP_WINDOW).inject();
+
+		ScrollPanel sp = new ScrollPanel();
+
+		CustomButton searchButton = new CustomButton("Search", SmallIcons.INSTANCE.magnifierIcon());
+		searchButton.addClickHandler(clickEvent -> {
+			request.clearParameters();
+			request.setInput(ta.getValue());
+			request.search();
+		});
+
+		firstTabPanel.add(searchButton);
+		final CellTable<FinderObject> table = request.getEmptyTable();
+
+		// add a class to the table and wrap it into scroll panel
+		table.addStyleName("perun-table");
+
+		sp.add(table);
+		sp.addStyleName("perun-tableScrollPanel");
+		firstTabPanel.add(sp);
+		session.getUiElements().resizePerunTable(sp, 350, this);
+
+		return firstTabPanel;
+	}
+
 	/**
 	 * Returns ID of last selected subtab in this page
 	 *
@@ -450,5 +569,13 @@ public class SearcherTabItem implements TabItem, TabItemWithUrl {
 	static public SearcherTabItem load(Map<String, String> parameters)
 	{
 		return new SearcherTabItem();
+	}
+
+	private void injectScript(String text) {
+		ScriptElement scriptElement = Document.get().createScriptElement();
+		scriptElement.setInnerText(text);
+		scriptElement.setType("text/javascript");
+		scriptElement.setAttribute("charset", "utf-8");
+		Document.get().getBody().appendChild(scriptElement);
 	}
 }

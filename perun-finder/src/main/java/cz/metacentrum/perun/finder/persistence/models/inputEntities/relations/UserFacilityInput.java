@@ -14,6 +14,11 @@ import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.FACI
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.USER;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.USER_FACILITY;
 
+/**
+ * Input from user for User Facility relation.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class UserFacilityInput extends RelationInputEntity {
 
 	private static final PerunEntityType TYPE = USER_FACILITY;

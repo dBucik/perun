@@ -1,5 +1,10 @@
 package cz.metacentrum.perun.finder.persistence.exceptions;
 
+/**
+ * Expcetion represents that specified relation is not of valid type.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class IllegalRelationException extends Exception {
 
 	public IllegalRelationException() {

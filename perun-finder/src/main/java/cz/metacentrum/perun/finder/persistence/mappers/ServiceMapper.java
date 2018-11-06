@@ -7,6 +7,11 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Mapper for the Service.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class ServiceMapper implements RowMapper<Service> {
 
 	@Override
@@ -16,8 +21,8 @@ public class ServiceMapper implements RowMapper<Service> {
 		Integer id = entityJson.getInt("id");
 		String name = MappersUtils.getString(entityJson,"name");
 		String description = MappersUtils.getString(entityJson,"description");
-		Integer delay = MappersUtils.getInt(entityJson, "delay");
-		Integer recurrence = MappersUtils.getInt(entityJson, "recurrence");
+		Integer delay = MappersUtils.getInteger(entityJson, "delay");
+		Integer recurrence = MappersUtils.getInteger(entityJson, "recurrence");
 		Boolean enabled = "1".equals(MappersUtils.getString(entityJson, "enabled"));
 		String script = MappersUtils.getString(entityJson,"script");
 

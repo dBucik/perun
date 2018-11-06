@@ -3,12 +3,12 @@ package cz.metacentrum.perun.finder.persistence;
 import com.opentable.db.postgres.junit.EmbeddedPostgresRules;
 import com.opentable.db.postgres.junit.SingleInstancePostgresRule;
 import cz.metacentrum.perun.finder.DBUtils;
-import cz.metacentrum.perun.finder.persistence.data.FinderDAOImpl;
+import cz.metacentrum.perun.finder.persistence.data.GeneralSearcherDAOImpl;
 import cz.metacentrum.perun.finder.persistence.enums.PerunAttributeType;
 import cz.metacentrum.perun.finder.persistence.models.PerunAttribute;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunEntity;
 import cz.metacentrum.perun.finder.persistence.models.entities.basic.User;
-import cz.metacentrum.perun.finder.service.FinderManager;
+import cz.metacentrum.perun.finder.service.GeneralSearcherManager;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,7 +37,7 @@ public class UserSearchingTests {
 	@ClassRule
 	public static final SingleInstancePostgresRule pg = EmbeddedPostgresRules.singleInstance();
 
-	private static FinderManager finderManager;
+	private static GeneralSearcherManager generalSearcherManager;
 	private static final Resource tablesFile = new ClassPathResource("db_init.sql");
 	private static final Resource dataFile = new ClassPathResource("db_init_data.sql");
 
@@ -50,9 +50,9 @@ public class UserSearchingTests {
 		DataSource ds = pg.getEmbeddedPostgres().getPostgresDatabase();
 		DBUtils.setUpDatabaseTables(ds, tablesFile, dataFile);
 		JdbcTemplate template = new JdbcTemplate(ds);
-		FinderDAOImpl dao = new FinderDAOImpl();
+		GeneralSearcherDAOImpl dao = new GeneralSearcherDAOImpl();
 		dao.setTemplate(template);
-		finderManager = new FinderManager(dao);
+		generalSearcherManager = new GeneralSearcherManager(dao);
 	}
 
 	@Before
@@ -161,7 +161,7 @@ public class UserSearchingTests {
 	public void findUserByIdTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"id\": {\"value\": [1]}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -171,7 +171,7 @@ public class UserSearchingTests {
 	public void findUserByFirstNameTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"firstName\": {\"value\": [\"first_name1\"]}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -181,7 +181,7 @@ public class UserSearchingTests {
 	public void findUserByMiddleNameTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"middleName\": {\"value\": [\"middle_name1\"]}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -191,7 +191,7 @@ public class UserSearchingTests {
 	public void findUserByLastNameTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"lastName\": {\"value\": [\"last_name1\"]}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -201,7 +201,7 @@ public class UserSearchingTests {
 	public void findUserByTitleBeforeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"titleBefore\": {\"value\": [\"title_before1\"]}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -211,7 +211,7 @@ public class UserSearchingTests {
 	public void findUserByTitleAfterNameTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"titleAfter\": {\"value\": [\"title_after1\"]}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -221,7 +221,7 @@ public class UserSearchingTests {
 	public void findUserByServiceTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"serviceAcc\": {\"value\": [true]}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -231,7 +231,7 @@ public class UserSearchingTests {
 	public void findUserBySponsoredTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"sponsoredAcc\": {\"value\": [true]}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -241,7 +241,7 @@ public class UserSearchingTests {
 	public void findAllUsersTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(3, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2, EXPECTED1));
@@ -251,7 +251,7 @@ public class UserSearchingTests {
 	public void findUserByStringAttributeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_str\", \"value\": [\"value1\"]}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -261,7 +261,7 @@ public class UserSearchingTests {
 	public void findUserByIntegerAttributeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_int\", \"value\": [1]}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -271,7 +271,7 @@ public class UserSearchingTests {
 	public void findUserByBooleanAttributeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_bool\", \"value\": [true]}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -281,7 +281,7 @@ public class UserSearchingTests {
 	public void findUserByArrayAttributeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_array\", \"value\": [[1,2]]}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -291,7 +291,7 @@ public class UserSearchingTests {
 	public void findUserByMapAttributeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_map\", \"value\": [{ \"key1\": \"value1\", \"key2\": \"value2\"}]}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -301,7 +301,7 @@ public class UserSearchingTests {
 	public void findUserByIntegerStringAttributeTest() throws Exception {
 		String input = "{\"entityName\" : \"user\", \"attributes\": [{\"name\": \"user_attr_lstring\", \"value\": [\"long_value1\"]}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -311,7 +311,7 @@ public class UserSearchingTests {
 	public void findUserByIntegerArrayAttributeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\" : [ { \"name\" : \"user_attr_larray\", \"value\" : [[1,2]]}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -321,7 +321,7 @@ public class UserSearchingTests {
 	public void findUserByIdLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"id\": {\"value\": [2], \"matchLike\": true}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -331,7 +331,7 @@ public class UserSearchingTests {
 	public void findUserByFirstNameLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"firstName\": {\"value\": [\"first_name2\"], \"matchLike\": true}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -341,7 +341,7 @@ public class UserSearchingTests {
 	public void findUserByMiddleNameLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"user\", \"middleName\" : {\"value\": [\"middle_name2\"], \"matchLike\": true}, \"attributes\" : [], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -351,7 +351,7 @@ public class UserSearchingTests {
 	public void findUserByLastNameLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"lastName\" : {\"value\": [\"last_name2\"], \"matchLike\": true}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -361,7 +361,7 @@ public class UserSearchingTests {
 	public void findUserByTitleBeforeLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"titleBefore\": {\"value\": [\"title_before2\"], \"matchLike\": true}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -371,7 +371,7 @@ public class UserSearchingTests {
 	public void findUserByTitleAfterNameLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"titleAfter\": {\"value\": [\"title_after2\"], \"matchLike\": true}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -381,7 +381,7 @@ public class UserSearchingTests {
 	public void findUserByServiceLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"serviceAcc\": {\"value\": [false], \"matchLike\": true}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -391,7 +391,7 @@ public class UserSearchingTests {
 	public void findUserBySponsoredLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"sponsoredAcc\": {\"value\": [false], \"matchLike\": true}, \"attributes\": [], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -401,7 +401,7 @@ public class UserSearchingTests {
 	public void findUserByStringAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_str\", \"value\": [\"value2\"], \"matchLike\": true}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -411,7 +411,7 @@ public class UserSearchingTests {
 	public void findUserByIntegerAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_int\", \"value\": [2], \"matchLike\": true}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -421,7 +421,7 @@ public class UserSearchingTests {
 	public void findUserByBooleanAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_bool\", \"value\": [false], \"matchLike\": true}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -431,7 +431,7 @@ public class UserSearchingTests {
 	public void findUserByArrayAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_array\", \"value\" : [[3,4]], \"matchLike\": true}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -441,7 +441,7 @@ public class UserSearchingTests {
 	public void findUserByMapAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_map\", \"value\": [{\"key3\": \"value3\", \"key4\": \"value4\"}], \"matchLike\": true}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -451,7 +451,7 @@ public class UserSearchingTests {
 	public void findUserByIntegerStringAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_lstring\", \"value\": [\"long_value2\"], \"matchLike\": true}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -461,7 +461,7 @@ public class UserSearchingTests {
 	public void findUserByIntegerArrayAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\": \"user\", \"attributes\": [{\"name\": \"user_attr_larray\", \"value\": [[3,4]], \"matchLike\": true}], \"attributeNames\": [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -473,7 +473,7 @@ public class UserSearchingTests {
 				"{\"entityName\" : \"facility\", \"id\": {\"value\": [1]} }" +
 				"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -485,7 +485,7 @@ public class UserSearchingTests {
 				"{\"entityName\": \"member\", \"id\": {\"value\": [1]}}" +
 				"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -497,7 +497,7 @@ public class UserSearchingTests {
 				"{\"entityName\": \"user_ext_source\", \"id\": {\"value\": [1]}}" +
 				"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -509,7 +509,7 @@ public class UserSearchingTests {
 				"{\"entityName\" : \"user_facility\", \"facilityId\" : {\"value\": [1]}}" +
 				"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));

@@ -14,6 +14,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Basic model for input from user.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public abstract class InputEntity {
 
 	protected static final String NO_VALUE = null;
@@ -46,14 +51,41 @@ public abstract class InputEntity {
 		}
 	}
 
+	/**
+	 * Check if the specified entity can be nested in the query.
+	 * @param entityType nested entity type
+	 * @return TRUE / FALSE
+	 */
 	protected abstract boolean isAllowedInnerInput(PerunEntityType entityType);
 
+	/**
+	 * Get DB table name for attributes
+	 * @return name of table
+	 */
 	protected abstract String getAttrNamesTable();
 
+	/**
+	 * Convert input to the Query object.
+	 * @param sourceType entity on higher level in query
+	 * @return constructed query object
+	 * @throws IncorrectCoreAttributeTypeException incorrect type for core attribute
+	 * @throws IncorrectSourceEntityException incorrect source entity (entity on higher level in query)
+	 */
 	public abstract Query toQuery(PerunEntityType sourceType) throws IncorrectCoreAttributeTypeException, IncorrectSourceEntityException;
 
+	/**
+	 * Initialize the Query object.
+	 * @return Query object
+	 */
 	public abstract Query initQuery();
 
+	/**
+	 * Build SELECT and FROM parts of the query
+	 * @param sourceType entity on higher level in query
+	 * @param isSimple TRUE if query does not need to fetch attributes
+	 * @return String with SELECT and FROM parts
+	 * @throws IncorrectSourceEntityException incorrect source entity (entity on higher level in query)
+	 */
 	protected abstract String buildSelectFrom(PerunEntityType sourceType, boolean isSimple) throws IncorrectSourceEntityException;
 
 	public PerunEntityType getEntityType() {
@@ -84,6 +116,12 @@ public abstract class InputEntity {
 		return (this.attrNames.isEmpty() && this.attributes.isEmpty());
 	}
 
+	/**
+	 * Merge names of attributes and attributeNames fields
+	 * @param attrNames specified attributes to be compared by values
+	 * @param attributes specified attributes to be fetched
+	 * @return List of merged names
+	 */
 	List<String> mergeNames(List<String> attrNames, List<InputAttribute> attributes) {
 		//fetch all attributes
 		if (attrNames.size() == 1) {
@@ -101,6 +139,12 @@ public abstract class InputEntity {
 		return new ArrayList<>(names);
 	}
 
+	/**
+	 * Get matching type
+	 * @param isLikeMatch TRUE if the match should be using LIKE
+	 * @param o value
+	 * @return String with operator
+	 */
 	String resolveMatchOperator(boolean isLikeMatch, Object o) {
 		if (o == null) {
 			return NULL_MATCH;

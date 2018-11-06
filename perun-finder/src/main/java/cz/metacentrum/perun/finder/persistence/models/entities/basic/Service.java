@@ -1,7 +1,13 @@
 package cz.metacentrum.perun.finder.persistence.models.entities.basic;
 
+import cz.metacentrum.perun.finder.persistence.enums.PerunEntityType;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunEntity;
 
+/**
+ * Model of Service entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class Service extends PerunEntity {
 
 	private String name;
@@ -13,7 +19,7 @@ public class Service extends PerunEntity {
 
 	public Service(Integer id, String name, String description, Integer delay, Integer recurrence, Boolean enabled,
 				   String script, Integer foreignId) {
-		super(id, foreignId);
+		super(id, foreignId, PerunEntityType.SERVICE);
 		this.name = name;
 		this.description = description;
 		this.delay = delay;

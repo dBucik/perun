@@ -1,6 +1,6 @@
 package cz.metacentrum.perun.core.api;
 
-import cz.metacentrum.perun.finder.service.FinderManager;
+import cz.metacentrum.perun.finder.service.GeneralSearcherManager;
 import cz.metacentrum.perun.core.api.exceptions.InternalErrorException;
 import cz.metacentrum.perun.core.impl.Auditer;
 
@@ -131,5 +131,5 @@ public interface Perun {
 	 * Gets a Finder manager.
 	 * @return Finder manager.
 	 */
-	FinderManager getFinderManager();
+	GeneralSearcherManager getGeneralSearcherManager();
 }

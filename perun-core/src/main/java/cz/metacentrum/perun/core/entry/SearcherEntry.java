@@ -1,7 +1,6 @@
 package cz.metacentrum.perun.core.entry;
 
 import cz.metacentrum.perun.core.api.ActionType;
-import cz.metacentrum.perun.core.api.Attribute;
 import cz.metacentrum.perun.core.api.AttributeDefinition;
 import cz.metacentrum.perun.core.api.AttributesManager;
 import cz.metacentrum.perun.core.api.AuthzResolver;
@@ -184,12 +183,12 @@ public class SearcherEntry implements Searcher {
 	}
 
 	@Override
-	public List<PerunEntity> performSearch(PerunSession sess, String query) throws PrivilegeException, InternalErrorException {
+	public List<PerunEntity> generalSearch(PerunSession sess, String query) throws PrivilegeException, InternalErrorException {
 		if (!AuthzResolver.isAuthorized(sess, Role.PERUNADMIN)) {
-			throw new PrivilegeException(sess, "performSearch");
+			throw new PrivilegeException(sess, "generalSearch");
 		}
 
-		return getPerunBl().getSearcherBl().performSearch(sess, query);
+		return getPerunBl().getSearcherBl().generalSearch(sess, query);
 	}
 
 	public SearcherBl getSearcherBl() {

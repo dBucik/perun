@@ -1,6 +1,6 @@
 package cz.metacentrum.perun.finder.service;
 
-import cz.metacentrum.perun.finder.persistence.data.FinderDAO;
+import cz.metacentrum.perun.finder.persistence.data.GeneralSearcherDAO;
 import cz.metacentrum.perun.finder.persistence.exceptions.AttributeTypeException;
 import cz.metacentrum.perun.finder.persistence.exceptions.IllegalRelationException;
 import cz.metacentrum.perun.finder.persistence.exceptions.IncorrectCoreAttributeTypeException;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class FinderManager {
+public class GeneralSearcherManager {
 
-	private final FinderDAO dao;
+	private final GeneralSearcherDAO dao;
 
-	public FinderManager(FinderDAO finderDAO) {
-		this.dao = finderDAO;
+	public GeneralSearcherManager(GeneralSearcherDAO generalSearcherDAO) {
+		this.dao = generalSearcherDAO;
 	}
 
 	public List<PerunEntity> performSearch(String input) throws IllegalRelationException, InputParseException, IncorrectCoreAttributeTypeException, AttributeTypeException, IncorrectSourceEntityException {

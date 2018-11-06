@@ -1,10 +1,16 @@
 package cz.metacentrum.perun.finder.persistence.models.entities.basic;
 
+import cz.metacentrum.perun.finder.persistence.enums.PerunEntityType;
 import cz.metacentrum.perun.finder.persistence.models.PerunAttribute;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunRichEntity;
 
 import java.util.Map;
 
+/**
+ * Model of User entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class User extends PerunRichEntity {
 
 	private String firstName;
@@ -17,7 +23,7 @@ public class User extends PerunRichEntity {
 
 	public User(Integer id, String firstName, String middleName, String lastName, String titleBefore, String titleAfter,
 				Boolean serviceAcc, Boolean sponsoredAcc, Map<String, PerunAttribute> attributes, Integer foreignId) {
-		super(id, attributes, foreignId);
+		super(id, attributes, foreignId, PerunEntityType.USER);
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.middleName = middleName;

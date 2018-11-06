@@ -13,6 +13,11 @@ import java.util.List;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.FACILITY;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.HOST;
 
+/**
+ * Input from user for Host entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class HostInput extends BasicInputEntity {
 
 	private static final PerunEntityType TYPE = HOST;

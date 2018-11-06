@@ -102,7 +102,8 @@ public class PerunAttribute {
 	 * @return List of Strings or NULL if type does not match.
 	 */
 	public List<String> valueAsList() {
-		if (type != PerunAttributeType.ARRAY && type != PerunAttributeType.LARGE_ARRAY_LIST) {
+		if ((type != PerunAttributeType.ARRAY && type != PerunAttributeType.LARGE_ARRAY_LIST)
+				|| value == null || value.isEmpty()) {
 			return null;
 		}
 
@@ -120,7 +121,7 @@ public class PerunAttribute {
 	 * @return Map (key = String, value = String) or NULL if type does not match.
 	 */
 	public Map<String, String> valueAsMap() {
-		if (type != PerunAttributeType.MAP) {
+		if (type != PerunAttributeType.MAP || value == null || value.isEmpty()) {
 			return null;
 		}
 
@@ -137,6 +138,10 @@ public class PerunAttribute {
 		return valuesMap;
 	}
 
+	/**
+	 * Get value as String
+	 * @return String value
+	 */
 	public String stringValue() {
 		return value;
 	}

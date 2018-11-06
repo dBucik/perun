@@ -12,16 +12,33 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * Basic model for input from user specifying entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public abstract class BasicInputEntity extends InputEntity {
 
 	protected BasicInputEntity(PerunEntityType entityType, boolean isTopLevel, List<InputAttribute> core, List<InputAttribute> attributes, List<String> attrNames, List<InputEntity> innerInputs) throws IllegalRelationException {
 		super(entityType, isTopLevel, core, attributes, attrNames, innerInputs);
 	}
 
+	/**
+	 * Get DB table name of entity
+	 * @return name of table
+	 */
 	public abstract String getEntityTable();
 
+	/**
+	 * Get entity_id field name in attrValuesTable
+	 * @return field name
+	 */
 	protected abstract String getEntityIdInAttrValuesTable();
 
+	/**
+	 * Get DB table name of entity attrs
+	 * @return name of table
+	 */
 	protected abstract String getAttrValuesTable();
 
 	@Override
@@ -66,6 +83,14 @@ public abstract class BasicInputEntity extends InputEntity {
 		return query;
 	}
 
+	/**
+	 * Get SELECT and FROM parts of the query
+	 * @param isSimple TRUE if the query does not have to query attributes
+	 * @param select SELECT part
+	 * @param join JOIN part
+	 * @param entityTable name of DB table for entity
+	 * @return String with SELECT and FROM parts
+	 */
 	public String getSelectFrom(boolean isSimple, String select, String join, String entityTable) {
 		StringBuilder queryString = new StringBuilder();
 		queryString.append("SELECT to_json(ent) AS entity");
@@ -84,6 +109,12 @@ public abstract class BasicInputEntity extends InputEntity {
 		return queryString.toString();
 	}
 
+	/**
+	 * Build query for attributes
+	 * @param query query object
+	 * @param attrNames names of attributes to be fetched
+	 * @return String containing query
+	 */
 	protected String buildAttributesQuery(Query query, List<String> attrNames) {
 		String entityId = this.getEntityIdInAttrValuesTable();
 		String attrValuesTable = this.getAttrValuesTable();
@@ -104,6 +135,12 @@ public abstract class BasicInputEntity extends InputEntity {
 		return queryString.toString();
 	}
 
+	/**
+	 * Build WHERE part for the attributes query
+	 * @param query query object
+	 * @param attrNames names of attributes to be fetched
+	 * @return String containing WHERE part
+	 */
 	protected String buildAttributesWhere(Query query, List<String> attrNames) {
 		if (attrNames == null || attrNames.isEmpty()) {
 			return NO_VALUE;
@@ -117,6 +154,12 @@ public abstract class BasicInputEntity extends InputEntity {
 		return "WHERE " + where.toString();
 	}
 
+	/**
+	 * Build WHERE part for entity
+	 * @param query query object
+	 * @param core list of core attributes
+	 * @return String containing WHERE part
+	 */
 	private String outerWhere(Query query, List<InputAttribute> core) {
 		if (core == null || core.isEmpty()) {
 			return NO_VALUE;

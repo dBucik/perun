@@ -314,7 +314,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	<bean id="searcherBl" class="cz.metacentrum.perun.core.blImpl.SearcherBlImpl" scope="singleton" depends-on="databaseManagerBl">
 		<property name="perunBl" ref="perun"/>
 		<constructor-arg name="searcherImpl" ref="searcherImpl" />
-		<constructor-arg name="finderManager" ref="finderManager"/>
+		<constructor-arg name="generalSearchManager" ref="generalSearchManager"/>
 	</bean>
 	<bean id="vosManagerImpl" class="cz.metacentrum.perun.core.impl.VosManagerImpl" scope="singleton" depends-on="databaseManagerBl">
 		<constructor-arg ref="dataSource" />
@@ -373,12 +373,12 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		<constructor-arg name="dataSource" ref="dataSource"/>
 	</bean>
 
-	<bean id="finderDAO" class="cz.metacentrum.perun.finder.persistence.data.FinderDAOImpl">
+	<bean id="generalSearcherDAO" class="cz.metacentrum.perun.finder.persistence.data.GeneralSearcherDAOImpl">
 		<property name="template" ref="template"/>
 	</bean>
 
-	<bean id="finderManager" class="cz.metacentrum.perun.finder.service.FinderManager">
-		<constructor-arg name="finderDAO" ref="finderDAO" />
+	<bean id="generalSearchManager" class="cz.metacentrum.perun.finder.service.GeneralSearcherManager">
+		<constructor-arg name="generalSearcherDAO" ref="generalSearcherDAO" />
 	</bean>
 
 	<bean class="cz.metacentrum.perun.core.impl.ExtSourceGoogle" factory-method="setPerunBlImpl">

@@ -3,7 +3,7 @@ package cz.metacentrum.perun.finder.persistence.enums;
 import cz.metacentrum.perun.finder.persistence.exceptions.AttributeTypeException;
 
 /**
- * Class represents type of attributes in Perun.
+ * Enum values represent type of attributes in Perun.
  *
  * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
  */

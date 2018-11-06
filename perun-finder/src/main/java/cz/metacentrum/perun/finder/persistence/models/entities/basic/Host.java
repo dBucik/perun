@@ -1,10 +1,16 @@
 package cz.metacentrum.perun.finder.persistence.models.entities.basic;
 
+import cz.metacentrum.perun.finder.persistence.enums.PerunEntityType;
 import cz.metacentrum.perun.finder.persistence.models.PerunAttribute;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunRichEntity;
 
 import java.util.Map;
 
+/**
+ * Model of Host entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class Host extends PerunRichEntity {
 
 	private String hostname;
@@ -12,7 +18,7 @@ public class Host extends PerunRichEntity {
 	private String description;
 
 	public Host(Integer id, String hostname, Integer facilityId, String description, Map<String, PerunAttribute> attributes, Integer foreignId) {
-		super(id, attributes, foreignId);
+		super(id, attributes, foreignId, PerunEntityType.HOST);
 		this.hostname = hostname;
 		this.facilityId = facilityId;
 		this.description = description;

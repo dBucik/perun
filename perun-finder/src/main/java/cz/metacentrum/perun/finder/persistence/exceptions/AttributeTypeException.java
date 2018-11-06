@@ -2,6 +2,8 @@ package cz.metacentrum.perun.finder.persistence.exceptions;
 
 /**
  * Exception thrown when provided attribute type cannot be parsed.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
  */
 public class AttributeTypeException extends Exception {
 

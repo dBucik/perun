@@ -14,6 +14,11 @@ import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.EXT_
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.USER;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.USER_EXT_SOURCE;
 
+/**
+ * Input from user for UserExtSource entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class UserExtSourceInput extends BasicInputEntity {
 
 	private static final PerunEntityType TYPE = USER_EXT_SOURCE;

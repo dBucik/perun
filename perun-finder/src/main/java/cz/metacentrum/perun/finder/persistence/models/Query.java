@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 
+/**
+ * Query object containing all information for generating SQL query
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class Query {
 
 	private String primaryKey;
@@ -22,6 +27,22 @@ public class Query {
 	private List<InputAttribute> inputAttributes;
 
 	private boolean hasWhere;
+
+	public String getPrimaryKey() {
+		return primaryKey;
+	}
+
+	public void setPrimaryKey(String primaryKey) {
+		this.primaryKey = primaryKey;
+	}
+
+	public String getSecondaryKey() {
+		return secondaryKey;
+	}
+
+	public void setSecondaryKey(String secondaryKey) {
+		this.secondaryKey = secondaryKey;
+	}
 
 	public PerunEntityType getEntityType() {
 		return entityType;
@@ -55,12 +76,29 @@ public class Query {
 		this.inputAttributes = inputAttributes;
 	}
 
+	public void setHasWhere(boolean hasWhere) {
+		this.hasWhere = hasWhere;
+	}
+
+	public MapSqlParameterSource getParameters() {
+		return parameters;
+	}
+
+	/**
+	 * Add parameter
+	 * @param value value
+	 * @return key of the parameter in query
+	 */
 	public String nextParam(Object value) {
 		paramCounter++;
 		parameters.addValue(String.valueOf(paramCounter), value);
 		return ':' + String.valueOf(paramCounter);
 	}
 
+	/**
+	 * Set ids retrieved from inner queries for Entity.
+	 * @param ids IDs
+	 */
 	public void setIds(Set<Integer> ids) {
 		if (ids == null || ids.isEmpty()) {
 			return;
@@ -74,6 +112,13 @@ public class Query {
 		this.queryString += query;
 	}
 
+	/**
+	 * Set ids retrieved from inner queries for Relation.
+	 * @param key1 key for first entity in relation
+	 * @param ids1 ids for first entity
+	 * @param key2 key for second entity in relation
+	 * @param ids2 ids for second entity
+	 */
 	public void setIds(String key1, Set<Integer> ids1, String key2, Set<Integer> ids2) {
 		StringJoiner query = new StringJoiner(" AND ");
 		if ((ids1 != null && !ids1.isEmpty()) || (ids2 != null && !ids2.isEmpty())) {
@@ -92,29 +137,5 @@ public class Query {
 			this.queryString += query.toString();
 		}
 		this.queryString += " GROUP BY rel." + getPrimaryKey() + ", rel." + getSecondaryKey();
-	}
-
-	public void setHasWhere(boolean hasWhere) {
-		this.hasWhere = hasWhere;
-	}
-
-	public MapSqlParameterSource getParameters() {
-		return parameters;
-	}
-
-	public String getPrimaryKey() {
-		return primaryKey;
-	}
-
-	public void setPrimaryKey(String primaryKey) {
-		this.primaryKey = primaryKey;
-	}
-
-	public String getSecondaryKey() {
-		return secondaryKey;
-	}
-
-	public void setSecondaryKey(String secondaryKey) {
-		this.secondaryKey = secondaryKey;
 	}
 }

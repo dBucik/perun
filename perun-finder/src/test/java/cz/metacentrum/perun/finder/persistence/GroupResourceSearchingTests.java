@@ -3,12 +3,12 @@ package cz.metacentrum.perun.finder.persistence;
 import com.opentable.db.postgres.junit.EmbeddedPostgresRules;
 import com.opentable.db.postgres.junit.SingleInstancePostgresRule;
 import cz.metacentrum.perun.finder.DBUtils;
-import cz.metacentrum.perun.finder.persistence.data.FinderDAOImpl;
+import cz.metacentrum.perun.finder.persistence.data.GeneralSearcherDAOImpl;
 import cz.metacentrum.perun.finder.persistence.enums.PerunAttributeType;
 import cz.metacentrum.perun.finder.persistence.models.PerunAttribute;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunEntity;
 import cz.metacentrum.perun.finder.persistence.models.entities.relations.GroupResource;
-import cz.metacentrum.perun.finder.service.FinderManager;
+import cz.metacentrum.perun.finder.service.GeneralSearcherManager;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,7 +37,7 @@ public class GroupResourceSearchingTests {
 	@ClassRule
 	public static final SingleInstancePostgresRule pg = EmbeddedPostgresRules.singleInstance();
 
-	private static FinderManager finderManager;
+	private static GeneralSearcherManager generalSearcherManager;
 	private static final Resource tablesFile = new ClassPathResource("db_init.sql");
 	private static final Resource dataFile = new ClassPathResource("db_init_data.sql");
 
@@ -50,9 +50,9 @@ public class GroupResourceSearchingTests {
 		DataSource ds = pg.getEmbeddedPostgres().getPostgresDatabase();
 		DBUtils.setUpDatabaseTables(ds, tablesFile, dataFile);
 		JdbcTemplate template = new JdbcTemplate(ds);
-		FinderDAOImpl dao = new FinderDAOImpl();
+		GeneralSearcherDAOImpl dao = new GeneralSearcherDAOImpl();
 		dao.setTemplate(template);
-		finderManager = new FinderManager(dao);
+		generalSearcherManager = new GeneralSearcherManager(dao);
 	}
 
 	@Before
@@ -143,7 +143,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByGroupIdTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"groupId\" : {\"value\": [1]}, \"attributes\" : [], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -153,7 +153,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByResourceIdTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"resourceId\" : {\"value\": [1]}, \"attributes\" : [], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -163,7 +163,7 @@ public class GroupResourceSearchingTests {
 	public void findAllGroupResourceRelationsTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(3, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2, EXPECTED1));
@@ -173,7 +173,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByStringAttributeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_str\", \"value\" : [\"value1\"]}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -183,7 +183,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByIntegerAttributeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_int\", \"value\" : [1]}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -193,7 +193,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByBooleanAttributeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_bool\", \"value\" : [true]}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -203,7 +203,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByArrayAttributeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_array\", \"value\" : [[1,2]]}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -213,7 +213,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByMapAttributeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_map\", \"value\" : [{ \"key1\" : \"value1\", \"key2\" : \"value2\"}]}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -223,7 +223,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByIntegerStringAttributeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_lstring\", \"value\" : [\"long_value1\"]}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -233,7 +233,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByIntegerArrayAttributeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_larray\", \"value\" : [[1,2]]}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -243,7 +243,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByGroupIdLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"groupId\" : {\"value\": [2], \"matchLike\": true}, \"attributes\" : [], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -253,7 +253,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByResourceIdLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"resourceId\" : {\"value\": [2], \"matchLike\": true}, \"attributes\" : [], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -263,7 +263,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByStringAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_str\", \"value\" : [\"value2\"], \"matchLike\": true}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -273,7 +273,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByIntegerAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_int\", \"value\" : [2], \"matchLike\": true}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -283,7 +283,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByBooleanAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_bool\", \"value\" : [false], \"matchLike\": true}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -293,7 +293,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByArrayAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_array\", \"value\" : [[3,4]], \"matchLike\": true}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -303,7 +303,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByMapAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_map\", \"value\" : [{\"key3\" : \"value3\", \"key4\" : \"value4\"}], \"matchLike\": true}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -313,7 +313,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByIntegerStringAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_lstring\", \"value\" : [\"long_value2\"], \"matchLike\": true}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -323,7 +323,7 @@ public class GroupResourceSearchingTests {
 	public void findGroupResourceRelationByIntegerArrayAttributeLikeTest() throws Exception {
 		String input = "{\"entityName\" : \"group_resource\", \"attributes\" : [ { \"name\" : \"group_resource_attr_larray\", \"value\" : [[3,4]], \"matchLike\": true}], \"attributeNames\" : [\"ALL\"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertThat(result, hasItems(EXPECTED23, EXPECTED2));
@@ -335,7 +335,7 @@ public class GroupResourceSearchingTests {
 				"{ \"entityName\" : \"group\", \"id\" : {\"value\": [1]} }" +
 				"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));
@@ -347,7 +347,7 @@ public class GroupResourceSearchingTests {
 				"{ \"entityName\" : \"resource\", \"id\" : {\"value\": [1]} }" +
 				"] }";
 
-		List<PerunEntity> result = finderManager.performSearch(input);
+		List<PerunEntity> result = generalSearcherManager.performSearch(input);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(EXPECTED1, result.get(0));

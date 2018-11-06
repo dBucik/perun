@@ -1,6 +1,6 @@
 package cz.metacentrum.perun.core.blImpl;
 
-import cz.metacentrum.perun.finder.service.FinderManager;
+import cz.metacentrum.perun.finder.service.GeneralSearcherManager;
 import cz.metacentrum.perun.core.api.Attribute;
 import cz.metacentrum.perun.core.api.AttributeDefinition;
 import cz.metacentrum.perun.core.api.AttributesManager;
@@ -85,7 +85,7 @@ public class PerunBlImpl implements PerunBl {
 	private RTMessagesManager rtMessagesManager = null;
 	private SecurityTeamsManager securityTeamsManager = null;
 	private Searcher searcher = null;
-	private FinderManager finderManager = null;
+	private GeneralSearcherManager generalSearcherManager = null;
 
 	private ModulesUtilsBl modulesUtilsBl = null;
 	private VosManagerBl vosManagerBl = null;
@@ -341,8 +341,8 @@ public class PerunBlImpl implements PerunBl {
 	}
 
 	@Override
-	public FinderManager getFinderManager() {
-		return finderManager;
+	public GeneralSearcherManager getGeneralSearcherManager() {
+		return generalSearcherManager;
 	}
 
 	@Override

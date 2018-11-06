@@ -1,5 +1,10 @@
 package cz.metacentrum.perun.finder.persistence.exceptions;
 
+/**
+ * Exception thrown when specified core attribute has other type than allowed types.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class IncorrectCoreAttributeTypeException extends Exception {
 	public IncorrectCoreAttributeTypeException() {
 		super();

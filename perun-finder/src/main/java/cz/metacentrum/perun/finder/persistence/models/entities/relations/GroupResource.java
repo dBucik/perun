@@ -1,5 +1,6 @@
 package cz.metacentrum.perun.finder.persistence.models.entities.relations;
 
+import cz.metacentrum.perun.finder.persistence.enums.PerunEntityType;
 import cz.metacentrum.perun.finder.persistence.models.PerunAttribute;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunRichEntity;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -7,6 +8,11 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Model of Group Resource relation.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 @JsonIgnoreProperties(value = "id")
 public class GroupResource extends PerunRichEntity {
 
@@ -14,7 +20,7 @@ public class GroupResource extends PerunRichEntity {
 	private Integer resourceId;
 
 	public GroupResource(Integer groupId, Integer resourceId, Map<String, PerunAttribute> attributes, Integer foreignId) {
-		super(null, attributes, foreignId);
+		super(null, attributes, foreignId, PerunEntityType.GROUP_RESOURCE);
 		this.groupId = groupId;
 		this.resourceId = resourceId;
 	}

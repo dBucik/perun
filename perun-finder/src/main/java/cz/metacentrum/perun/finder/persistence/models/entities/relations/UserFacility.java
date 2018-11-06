@@ -1,5 +1,6 @@
 package cz.metacentrum.perun.finder.persistence.models.entities.relations;
 
+import cz.metacentrum.perun.finder.persistence.enums.PerunEntityType;
 import cz.metacentrum.perun.finder.persistence.models.PerunAttribute;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunRichEntity;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -7,6 +8,11 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Model of User Facility relation.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 @JsonIgnoreProperties(value = "id")
 public class UserFacility extends PerunRichEntity {
 
@@ -14,7 +20,7 @@ public class UserFacility extends PerunRichEntity {
 	private Integer facilityId;
 
 	public UserFacility(Integer userId, Integer facilityId, Map<String, PerunAttribute> attributes, Integer foreignId) {
-		super(null, attributes, foreignId);
+		super(null, attributes, foreignId, PerunEntityType.USER_FACILITY);
 		this.userId = userId;
 		this.facilityId = facilityId;
 	}

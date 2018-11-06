@@ -1,10 +1,16 @@
 package cz.metacentrum.perun.finder.persistence.models.entities.basic;
 
+import cz.metacentrum.perun.finder.persistence.enums.PerunEntityType;
 import cz.metacentrum.perun.finder.persistence.models.PerunAttribute;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunRichEntity;
 
 import java.util.Map;
 
+/**
+ * Model of UserExtSource entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class UserExtSource extends PerunRichEntity {
 
 	private Integer userId;
@@ -15,7 +21,7 @@ public class UserExtSource extends PerunRichEntity {
 
 	public UserExtSource(Integer id, Integer userId, String loginExt, Integer extSourceId,
 						 Integer loa, Long lastAccess, Map<String, PerunAttribute> attributes, Integer foreignId) {
-		super(id, attributes, foreignId);
+		super(id, attributes, foreignId, PerunEntityType.USER_EXT_SOURCE);
 		this.userId = userId;
 		this.loginExt = loginExt;
 		this.extSourceId = extSourceId;

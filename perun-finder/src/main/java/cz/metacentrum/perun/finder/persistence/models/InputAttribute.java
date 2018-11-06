@@ -70,6 +70,10 @@ public class InputAttribute {
 		this.likeMatch = likeMatch;
 	}
 
+	/**
+	 * Get value as list of Strings
+	 * @return List of Strings / empty list
+	 */
 	public List<String> valueAsStrings() {
 		List<String> values = new ArrayList<>();
 		for (int i = 0; i < value.length(); i++) {
@@ -79,6 +83,10 @@ public class InputAttribute {
 		return values;
 	}
 
+	/**
+	 * Get value as List of Integers
+	 * @return List of Integers / empty list
+	 */
 	public List<Integer> valueAsInts() {
 		List<Integer> values = new ArrayList<>();
 		for (int i = 0; i < value.length(); i++) {
@@ -88,6 +96,10 @@ public class InputAttribute {
 		return values;
 	}
 
+	/**
+	 * Get values as List of Booleans
+	 * @return List of Booleans / empty list
+	 */
 	public List<Boolean> valueAsBooleans() {
 		List<Boolean> values = new ArrayList<>();
 		for (int i = 0; i < value.length(); i++) {
@@ -97,6 +109,10 @@ public class InputAttribute {
 		return values;
 	}
 
+	/**
+	 * Get values as List of Lists<String>
+	 * @return List of values / empty list
+	 */
 	public List<List<String>> valueAsLists() {
 		List<List<String>> values = new ArrayList<>();
 		for (int i = 0; i < value.length(); i++) {
@@ -110,6 +126,10 @@ public class InputAttribute {
 		return values;
 	}
 
+	/**
+	 * Get values as List of Map<String, String>
+	 * @return List of values / empty list
+	 */
 	public List<Map<String, String>> valueAsMaps() {
 		List<Map<String, String>> values = new ArrayList<>();
 		for (int i = 0; i < value.length(); i++) {

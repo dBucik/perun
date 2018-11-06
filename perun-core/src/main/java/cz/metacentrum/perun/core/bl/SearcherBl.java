@@ -9,6 +9,7 @@ import cz.metacentrum.perun.core.api.Resource;
 import cz.metacentrum.perun.core.api.User;
 import cz.metacentrum.perun.core.api.exceptions.InternalErrorException;
 import cz.metacentrum.perun.core.api.exceptions.AttributeNotExistsException;
+import cz.metacentrum.perun.core.api.exceptions.PrivilegeException;
 import cz.metacentrum.perun.core.api.exceptions.WrongAttributeAssignmentException;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunEntity;
 
@@ -161,5 +162,48 @@ public interface SearcherBl {
 	 */
 	List<Resource> getResources(PerunSession sess, Map<String, String> attributesWithSearchingValues) throws InternalErrorException, AttributeNotExistsException, WrongAttributeAssignmentException;
 
-	List<PerunEntity> performSearch(PerunSession sess, String query) throws InternalErrorException;
+	/**
+	 * Return all entities that meet the criteria specified in input query.
+	 * Query needs to be specified as a JSON with only specific fields
+	 * Example query:
+	 * {
+	 *     "entityName" : "VO",
+	 *     "id" : {
+	 *         "value" : [1,2,3],
+	 *         "matchLike" : true
+	 *     },
+	 *     "attributes" : [
+	 *     		{
+	 *     		 	"name" : "urn:perun:vo:attribute-def:def:attributeName",
+	 *     		 	"value" : ["value1", "value2"],
+	 *     		    "matchLike" : true
+	 *     		}
+	 *     ],
+	 *     "attributesNames" : ["attr1", "attr2"],
+	 *     "relations" : [
+	 *   		{
+	 *   		 	"entityName" : "MEMBER
+	 *   		}
+	 *     ]
+	 * }
+	 *
+	 * FIELDS EXPLANATION:
+	 * entityName - specified type of entity that will be in the result - can be one of EXT_SOURCE, FACILITY, GROUP, HOST, MEMBER, RESOURCE, SERVICE (1), USER, USER_EXT_SOURCE, VO, GROUP_RESOURCE, MEMBER_GROUP, MEMBER_RESOURCE, USER_FACILITY
+	 * id - the way how the core attributes are queried - I.E. for VO fields id, shortName, name are valid
+	 * attributes - querying attributes of the entity, entity has to have all of the listed attributes with respective values (2)
+	 * attributesNames - names of attributes that will be listed in the result as well (3)
+	 * relations - way how to express relationship of entity with another entity (4)
+	 *
+	 * (1) - SERVICE is a special entity where fields attributes and attributesNames are ignored.
+	 * (2) - Attributes have to have fully qualified name and it is matched using EXACT match. Value has to be provided in an array, multiple values are connected using OR.
+	 * The field matchLike enables matching of the value as a subValue, when field is not present, EXACT matching is used.
+	 * (3) - Attributes will be combined with with attributes specified with values in result, names have to be fully qualified
+	 * (4) - Entity has exact structure as the shown top level query. Relations can be nested.
+	 * (5) - Field entityName specifying relation (i.e. MEMBER_RESOURCE) can have only memberId and resourceId as "core" fields
+	 * @param sess Perun session
+	 * @param query input to be searched by
+	 * @return Collection of found entities
+	 * @throws InternalErrorException insufficient permission
+	 */
+	List<PerunEntity> generalSearch(PerunSession sess, String query) throws InternalErrorException;
 }

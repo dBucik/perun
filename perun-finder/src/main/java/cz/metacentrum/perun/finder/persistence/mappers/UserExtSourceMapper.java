@@ -9,6 +9,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
+/**
+ * Mapper for the UserExtSource.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class UserExtSourceMapper implements RowMapper<UserExtSource> {
 
 	@Override
@@ -19,7 +24,7 @@ public class UserExtSourceMapper implements RowMapper<UserExtSource> {
 		Integer userId = MappersUtils.getInteger(entityJson, "user_id");
 		String loginExt = MappersUtils.getString(entityJson,"login_ext");
 		Integer extSourceId = MappersUtils.getInteger(entityJson, "ext_source_id");
-		Integer loa = MappersUtils.getInt(entityJson, "loa");
+		Integer loa = MappersUtils.getInteger(entityJson, "loa");
 		Long lastAccess = MappersUtils.getTimestampMillis(entityJson, "last_access");
 
 		Map<String, PerunAttribute> attributes = MappersUtils.getAttributes(resultSet);

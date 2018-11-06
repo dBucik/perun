@@ -10,7 +10,6 @@ import cz.metacentrum.perun.core.api.PerunSession;
 import cz.metacentrum.perun.core.api.Resource;
 import cz.metacentrum.perun.core.api.User;
 import cz.metacentrum.perun.core.api.exceptions.AttributeNotExistsException;
-import cz.metacentrum.perun.core.api.exceptions.IllegalArgumentException;
 import cz.metacentrum.perun.core.api.exceptions.InternalErrorException;
 import cz.metacentrum.perun.core.api.exceptions.WrongAttributeAssignmentException;
 import cz.metacentrum.perun.core.bl.PerunBl;
@@ -20,7 +19,7 @@ import cz.metacentrum.perun.finder.persistence.exceptions.AttributeTypeException
 import cz.metacentrum.perun.finder.persistence.exceptions.IllegalRelationException;
 import cz.metacentrum.perun.finder.persistence.exceptions.IncorrectCoreAttributeTypeException;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunEntity;
-import cz.metacentrum.perun.finder.service.FinderManager;
+import cz.metacentrum.perun.finder.service.GeneralSearcherManager;
 import cz.metacentrum.perun.finder.service.IncorrectSourceEntityException;
 import cz.metacentrum.perun.finder.service.InputParseException;
 import org.slf4j.Logger;
@@ -43,11 +42,11 @@ public class SearcherBlImpl implements SearcherBl {
 
 	private final SearcherImplApi searcherImpl;
 	private PerunBl perunBl;
-	private FinderManager finderManager;
+	private GeneralSearcherManager generalSearchManager;
 
-	public SearcherBlImpl(SearcherImplApi searcherImpl, FinderManager finderManager) {
+	public SearcherBlImpl(SearcherImplApi searcherImpl, GeneralSearcherManager generalSearchManager) {
 		this.searcherImpl = searcherImpl;
-		this.finderManager = finderManager;
+		this.generalSearchManager = generalSearchManager;
 	}
 
 	@Override
@@ -180,6 +179,23 @@ public class SearcherBlImpl implements SearcherBl {
 		List<Resource> resourcesFromAttributes = getSearcherImpl().getResources(sess, mapOfAttrsWithValues);
 		resourcesFromCoreAttributes.retainAll(resourcesFromAttributes);
 		return resourcesFromCoreAttributes;
+	}
+
+	@Override
+	public List<PerunEntity> generalSearch(PerunSession sess, String query) throws InternalErrorException {
+		try {
+			return generalSearchManager.performSearch(query);
+		} catch (IllegalRelationException e) {
+			throw new InternalErrorException("Specified relation is not allowed", e);
+		} catch (InputParseException e) {
+			throw new InternalErrorException("Error while parsing attributes", e);
+		} catch (IncorrectCoreAttributeTypeException e) {
+			throw new InternalErrorException("Core attribute type mismatch", e);
+		} catch (AttributeTypeException e) {
+			throw new InternalErrorException("Type error when parsing attribute", e);
+		} catch (IncorrectSourceEntityException e) {
+			throw new InternalErrorException("Error in entity hierarchy", e);
+		}
 	}
 
 	private List<Facility> getFacilitiesForCoreAttributesByMapOfAttributes(PerunSession sess, Map<AttributeDefinition, String> coreAttributesWithSearchingValues) throws InternalErrorException, AttributeNotExistsException, WrongAttributeAssignmentException {
@@ -317,23 +333,6 @@ public class SearcherBlImpl implements SearcherBl {
 			}
 		}
 		return users;
-	}
-
-	@Override
-	public List<PerunEntity> performSearch(PerunSession sess, String query) throws InternalErrorException {
-		try {
-			return finderManager.performSearch(query);
-		} catch (IllegalRelationException e) {
-			throw new InternalErrorException("Specified relation is not allowed", e);
-		} catch (InputParseException e) {
-			throw new InternalErrorException("Error while parsing attributes", e);
-		} catch (IncorrectCoreAttributeTypeException e) {
-			throw new InternalErrorException("Core attribute type mismatch", e);
-		} catch (AttributeTypeException e) {
-			throw new InternalErrorException("Type error when parsing attribute", e);
-		} catch (IncorrectSourceEntityException e) {
-			throw new InternalErrorException("Error in entity hierarchy", e);
-		}
 	}
 
 	public SearcherImplApi getSearcherImpl() {

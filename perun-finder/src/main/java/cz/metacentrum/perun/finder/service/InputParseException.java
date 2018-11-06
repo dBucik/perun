@@ -1,5 +1,10 @@
 package cz.metacentrum.perun.finder.service;
 
+/**
+ * Excpetion thrown when input query from user is incorrect
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class InputParseException extends Exception {
 
 	public InputParseException() {

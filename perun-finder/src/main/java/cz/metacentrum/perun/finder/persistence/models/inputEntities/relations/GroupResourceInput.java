@@ -14,6 +14,11 @@ import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.GROU
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.GROUP_RESOURCE;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.RESOURCE;
 
+/**
+ * Input from user for Group Resource relation.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class GroupResourceInput extends RelationInputEntity {
 
 	private static final PerunEntityType TYPE = GROUP_RESOURCE;

@@ -14,6 +14,11 @@ import java.util.List;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.RESOURCE;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.SERVICE;
 
+/**
+ * Input from user for Service entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class ServiceInput extends BasicInputEntity {
 
 	private static final PerunEntityType TYPE = SERVICE;

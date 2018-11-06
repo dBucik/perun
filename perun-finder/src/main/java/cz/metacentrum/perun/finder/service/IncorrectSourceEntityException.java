@@ -1,5 +1,10 @@
 package cz.metacentrum.perun.finder.service;
 
+/**
+ * Exception thrown when entity on higher level cannot have specified child entity
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class IncorrectSourceEntityException extends Exception {
 
 	public IncorrectSourceEntityException() {

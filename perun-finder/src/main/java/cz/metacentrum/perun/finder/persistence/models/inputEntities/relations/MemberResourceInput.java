@@ -14,6 +14,11 @@ import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.MEMB
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.MEMBER_RESOURCE;
 import static cz.metacentrum.perun.finder.persistence.enums.PerunEntityType.RESOURCE;
 
+/**
+ * Input from user for Member Resource relation.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class MemberResourceInput extends RelationInputEntity {
 
 	private static final PerunEntityType TYPE = MEMBER_RESOURCE;

@@ -1,10 +1,16 @@
 package cz.metacentrum.perun.finder.persistence.models.entities.basic;
 
+import cz.metacentrum.perun.finder.persistence.enums.PerunEntityType;
 import cz.metacentrum.perun.finder.persistence.models.PerunAttribute;
 import cz.metacentrum.perun.finder.persistence.models.entities.PerunRichEntity;
 
 import java.util.Map;
 
+/**
+ * Model of Group entity.
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
 public class Group extends PerunRichEntity {
 
 	private String name;
@@ -13,7 +19,7 @@ public class Group extends PerunRichEntity {
 	private Integer parentGroupId;
 
 	public Group(Integer id, String name, String description, Integer voId, Integer parentGroupId, Map<String, PerunAttribute> attributes, Integer foreignId) {
-		super(id, attributes, foreignId);
+		super(id, attributes, foreignId, PerunEntityType.GROUP);
 		this.name = name;
 		this.description = description;
 		this.voId = voId;

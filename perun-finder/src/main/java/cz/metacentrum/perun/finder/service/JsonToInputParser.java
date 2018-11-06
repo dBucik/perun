@@ -26,8 +26,22 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class to parse JSON from user to Input objects
+ *
+ * @author Dominik Frantisek Bucik <bucik@ics.muni.cz>
+ */
+@SuppressWarnings("Duplicates")
 public class JsonToInputParser {
 
+	/**
+	 * Parse the given input
+	 * @param inputString String with query
+	 * @return parsed input
+	 * @throws InputParseException Error while parsing input
+	 * @throws IllegalRelationException Specified relation does not exist
+	 * @throws AttributeTypeException Attribute has incorrect type
+	 */
 	public static InputEntity parseInput(String inputString) throws InputParseException, IllegalRelationException, AttributeTypeException {
 		JSONObject json = new JSONObject(inputString);
 		return parseInputEntity(json, true);
