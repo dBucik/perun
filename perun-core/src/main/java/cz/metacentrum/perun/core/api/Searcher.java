@@ -173,4 +173,16 @@ public interface Searcher {
 	 * @throws PrivilegeException insufficient permission
 	 */
 	List<Member> getMembersByGroupExpiration(PerunSession sess, Group group, String operator, Calendar date) throws PrivilegeException, InternalErrorException;
+
+	/**
+	 * Connects to the GraphiQL endpoint and performs search based on specified parameters
+	 * @param sess perun session
+	 * @param query query string
+	 * @param variables variables in JSON format
+	 * @param operationName name of operation
+	 * @return Map of found values
+	 * @throws InternalErrorException internal error
+	 * @throws PrivilegeException insufficient permission
+	 */
+	Map perunql(PerunSession sess, String query, String variables, String operationName) throws InternalErrorException, PrivilegeException;
 }

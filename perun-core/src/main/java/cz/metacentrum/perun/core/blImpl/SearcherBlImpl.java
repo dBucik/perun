@@ -1,5 +1,8 @@
 package cz.metacentrum.perun.core.blImpl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import cz.metacentrum.perun.core.api.Attribute;
 import cz.metacentrum.perun.core.api.AttributeDefinition;
 import cz.metacentrum.perun.core.api.AttributesManager;
@@ -16,16 +19,24 @@ import cz.metacentrum.perun.core.bl.PerunBl;
 import cz.metacentrum.perun.core.bl.SearcherBl;
 import cz.metacentrum.perun.core.implApi.SearcherImplApi;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.InterceptingClientHttpRequestFactory;
+import org.springframework.http.client.support.BasicAuthorizationInterceptor;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Searcher Class for searching objects by Map of Attributes
@@ -37,6 +48,10 @@ public class SearcherBlImpl implements SearcherBl {
 
 	private final SearcherImplApi searcherImpl;
 	private PerunBl perunBl;
+	private String hostURL;
+	private String qlUser;
+	private String qlPass;
+	private String dbType;
 
 	public SearcherBlImpl(SearcherImplApi searcherImpl) {
 		this.searcherImpl = searcherImpl;
@@ -172,6 +187,54 @@ public class SearcherBlImpl implements SearcherBl {
 		List<Resource> resourcesFromAttributes = getSearcherImpl().getResources(sess, mapOfAttrsWithValues);
 		resourcesFromCoreAttributes.retainAll(resourcesFromAttributes);
 		return resourcesFromCoreAttributes;
+	}
+
+	@Override
+	public Map perunql(PerunSession sess, String query, String variables, String operationName) throws InternalErrorException {
+		if (hostURL == null || hostURL.isEmpty()) {
+			throw new InternalErrorException("Endpoint for querying not specified");
+		} else if (Strings.isNullOrEmpty(qlUser) || Strings.isNullOrEmpty(qlPass)) {
+			throw new InternalErrorException("Credentials for querying endpoint not set");
+		} else if (Strings.isNullOrEmpty(dbType)) {
+			throw new InternalErrorException("Database type not specified");
+		}
+
+		if (!("postgre".equalsIgnoreCase(dbType) ||
+			  "postgres".equalsIgnoreCase(dbType) ||
+			  "postgresql".equalsIgnoreCase(dbType))) {
+
+			throw new InternalErrorException("Endpoint for querying does not support database: " + dbType);
+		}
+
+		RestTemplate template = new RestTemplate();
+		List<ClientHttpRequestInterceptor> interceptors =
+			Collections.singletonList(new BasicAuthorizationInterceptor(qlUser, qlPass));
+		template.setRequestFactory(new InterceptingClientHttpRequestFactory(template.getRequestFactory(), interceptors));
+		Map<String, Object> params = new LinkedHashMap<>();
+		params.put("query", query);
+		params.put("variables", variables);
+		params.put("operationName", operationName);
+		String actionUrl = hostURL + "/ql";
+
+		try {
+			JsonNode result = template.postForObject(actionUrl, params, JsonNode.class);
+			ObjectMapper mapper = new ObjectMapper();
+			return mapper.convertValue(result, Map.class);
+		} catch (HttpClientErrorException ex) {
+			MediaType contentType = ex.getResponseHeaders().getContentType();
+			String body = ex.getResponseBodyAsString();
+			log.error("HTTP ERROR " + ex.getRawStatusCode() + " URL " + actionUrl + " Content-Type: " + contentType);
+			if ("json".equals(contentType.getSubtype())) {
+				try {
+					log.error(new ObjectMapper().readValue(body, JsonNode.class).path("message").asText());
+				} catch (IOException e) {
+					log.error("cannot parse error message from JSON", e);
+				}
+			} else {
+				log.error(ex.getMessage());
+			}
+			throw new InternalErrorException("Error when performing search", ex);
+		}
 	}
 
 	private List<Facility> getFacilitiesForCoreAttributesByMapOfAttributes(PerunSession sess, Map<AttributeDefinition, String> coreAttributesWithSearchingValues) throws InternalErrorException, AttributeNotExistsException, WrongAttributeAssignmentException {
@@ -323,4 +386,19 @@ public class SearcherBlImpl implements SearcherBl {
 		this.perunBl = perunBl;
 	}
 
+	public void setHostURL(String hostURL) {
+		this.hostURL = hostURL;
+	}
+
+	public void setQlUser(String qlUser) {
+		this.qlUser = qlUser;
+	}
+
+	public void setQlPass(String qlPass) {
+		this.qlPass = qlPass;
+	}
+
+	public void setDbType(String dbType) {
+		this.dbType = dbType;
+	}
 }

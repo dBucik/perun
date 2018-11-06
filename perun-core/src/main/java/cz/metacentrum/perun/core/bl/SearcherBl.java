@@ -159,4 +159,15 @@ public interface SearcherBl {
 	 * @throws WrongAttributeAssignmentException wrong attribute assignment
 	 */
 	List<Resource> getResources(PerunSession sess, Map<String, String> attributesWithSearchingValues) throws InternalErrorException, AttributeNotExistsException, WrongAttributeAssignmentException;
+
+	/**
+	 * Connects to the GraphiQL endpoint and performs search based on specified parameters
+	 * @param sess perun session
+	 * @param query query string
+	 * @param variables variables in JSON format
+	 * @param operationName operation name
+	 * @return Map of found values
+	 * @throws InternalErrorException internal error
+	 */
+	Map perunql(PerunSession sess, String query, String variables, String operationName) throws InternalErrorException;
 }

@@ -1,18 +1,24 @@
 package cz.metacentrum.perun.webgui.tabs.perunadmintabs;
 
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.ScriptElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.*;
 import cz.metacentrum.perun.webgui.client.PerunWebSession;
 import cz.metacentrum.perun.webgui.client.UiElements;
 import cz.metacentrum.perun.webgui.client.mainmenu.MainMenu;
+import cz.metacentrum.perun.webgui.client.resources.GraphQL;
 import cz.metacentrum.perun.webgui.client.resources.PerunEntity;
 import cz.metacentrum.perun.webgui.client.resources.SmallIcons;
 import cz.metacentrum.perun.webgui.client.resources.TableSorter;
@@ -22,6 +28,7 @@ import cz.metacentrum.perun.webgui.json.searcher.GetFacilities;
 import cz.metacentrum.perun.webgui.json.searcher.GetMembers;
 import cz.metacentrum.perun.webgui.json.searcher.GetResources;
 import cz.metacentrum.perun.webgui.json.searcher.GetUsers;
+import cz.metacentrum.perun.webgui.json.searcher.PerunQL;
 import cz.metacentrum.perun.webgui.json.vosManager.GetVos;
 import cz.metacentrum.perun.webgui.model.Facility;
 import cz.metacentrum.perun.webgui.model.Member;
@@ -98,6 +105,7 @@ public class SearcherTabItem implements TabItem, TabItemWithUrl {
 		final SimplePanel sp1 = new SimplePanel(); // facilities
 		final SimplePanel sp2 = new SimplePanel(); // members
 		final SimplePanel sp3 = new SimplePanel(); // resources
+		final SimplePanel sp4 = new SimplePanel(); // PerunQL
 
 		session.getUiElements().resizeSmallTabPanel(tabPanel, 100, this);
 
@@ -105,6 +113,7 @@ public class SearcherTabItem implements TabItem, TabItemWithUrl {
 		tabPanel.add(sp2, "Members");
 		tabPanel.add(sp1, "Facilities");
 		tabPanel.add(sp3, "Resources");
+		tabPanel.add(sp4, "PerunQL");
 
 		sp0.setWidget(loadUsersTab());
 
@@ -128,6 +137,10 @@ public class SearcherTabItem implements TabItem, TabItemWithUrl {
 				} else if (3 == event.getSelectedItem()) {
 					if (sp3.getWidget() == null) {
 						sp3.setWidget(loadResourcesTab());
+					}
+				} else if (4 == event.getSelectedItem()) {
+					if (sp4.getWidget() == null) {
+						sp4.setWidget(loadQLTab());
 					}
 				}
 			}
@@ -361,6 +374,123 @@ public class SearcherTabItem implements TabItem, TabItemWithUrl {
 		session.getUiElements().resizePerunTable(sp, 350, this);
 		return firstTabPanel;
 
+	}
+
+	private Widget loadQLTab() {
+
+		// request
+		final PerunQL request = new PerunQL();
+
+		injectScripts();
+
+		// MAIN TAB PANEL
+		VerticalPanel firstTabPanel = new VerticalPanel();
+		firstTabPanel.setSize("100%", "100%");
+
+		Widget widget = request.getWindow();
+
+		firstTabPanel.add(widget);
+		session.getUiElements().resizePerunTable(widget, 350, this);
+		return firstTabPanel;
+
+	}
+
+	private void injectScripts() {
+		ScriptInjector.fromUrl("https://cdn.jsdelivr.net/es6-promise/4.0.5/es6-promise.auto.min.js")
+			.setCallback(new Callback<Void, Exception>() {
+				@Override
+				public void onFailure(Exception e) {
+
+				}
+
+				@Override
+				public void onSuccess(Void aVoid) {
+					injectNext1();
+				}
+			})
+			.setRemoveTag(false)
+			.setWindow(ScriptInjector.TOP_WINDOW).inject();
+	}
+
+	private void injectNext1() {
+		ScriptInjector.fromUrl("https://cdn.jsdelivr.net/fetch/0.9.0/fetch.min.js")
+			.setCallback(new Callback<Void, Exception>() {
+				@Override
+				public void onFailure(Exception e) {
+
+				}
+
+				@Override
+				public void onSuccess(Void aVoid) {
+					injectNext2();
+				}
+			})
+			.setRemoveTag(false)
+			.setWindow(ScriptInjector.TOP_WINDOW)
+			.inject();
+	}
+
+	private void injectNext2() {
+		ScriptInjector.fromUrl("https://cdn.jsdelivr.net/react/15.4.2/react.min.js")
+			.setCallback(new Callback<Void, Exception>() {
+				@Override
+				public void onFailure(Exception e) {
+
+				}
+
+				@Override
+				public void onSuccess(Void aVoid) {
+					injectNext3();
+				}
+			})
+			.setRemoveTag(false)
+			.setWindow(ScriptInjector.TOP_WINDOW)
+			.inject();
+	}
+
+	private void injectNext3() {
+		ScriptInjector.fromUrl("https://cdn.jsdelivr.net/react/15.4.2/react-dom.min.js")
+			.setCallback(new Callback<Void, Exception>() {
+				@Override
+				public void onFailure(Exception e) {
+
+				}
+
+				@Override
+				public void onSuccess(Void aVoid) {
+					injectNext4();
+				}
+			})
+			.setRemoveTag(false)
+			.setWindow(ScriptInjector.TOP_WINDOW)
+			.inject();
+	}
+
+	private void injectNext4() {
+		ScriptInjector.fromUrl("https://cdn.jsdelivr.net/npm/graphiql@0.11.11/graphiql.min.js")
+			.setCallback(new Callback<Void, Exception>() {
+				@Override
+				public void onFailure(Exception e) {
+
+				}
+
+				@Override
+				public void onSuccess(Void aVoid) {
+					injectNext5();
+				}
+			})
+			.setRemoveTag(false)
+			.setWindow(ScriptInjector.TOP_WINDOW)
+			.inject();
+	}
+
+	private void injectNext5() {
+		TextResource init = GraphQL.INSTANCE.init();
+		ScriptElement scriptElement = Document.get().createScriptElement();
+		scriptElement.setInnerText(init.getText());
+		scriptElement.setType("text/javascript");
+		scriptElement.setAttribute("charset", "utf-8");
+		Document.get().getBody().appendChild(scriptElement);
 	}
 
 	/**

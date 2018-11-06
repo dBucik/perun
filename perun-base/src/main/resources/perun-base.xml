@@ -103,6 +103,9 @@
 				<prop key="perun.instanceName">LOCAL</prop>
 				<prop key="perun.allowedCorsDomains"></prop>
 				<prop key="perun.cacheEnabled">false</prop>
+				<prop key="perun.instanceHostURL">https://perun-dev.cesnet.cz</prop>
+				<prop key="perun.ql.user">GraphQL</prop>
+				<prop key="perun.ql.password">********</prop>
 				<!--
 				   this creates a map from OIDC issuer to user extsources that are used for looking up a user identified by "sub" claim
 				-->

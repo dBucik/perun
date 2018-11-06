@@ -316,6 +316,10 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 	<bean id="searcherBl" class="cz.metacentrum.perun.core.blImpl.SearcherBlImpl" scope="singleton" depends-on="databaseManagerBl">
 		<property name="perunBl" ref="perun"/>
 		<constructor-arg ref="searcherImpl" />
+		<property name="hostURL" value="${perun.instanceHostURL}"/>
+		<property name="qlUser" value="${perun.ql.user}" />
+		<property name="qlPass" value="${perun.ql.password}"/>
+		<property name="dbType" value="${perun.db.type}"/>
 	</bean>
 
 	<bean id="vosManagerImpl" class="cz.metacentrum.perun.core.impl.VosManagerImpl" scope="singleton" depends-on="databaseManagerBl">

@@ -1,7 +1,6 @@
 package cz.metacentrum.perun.core.entry;
 
 import cz.metacentrum.perun.core.api.ActionType;
-import cz.metacentrum.perun.core.api.Attribute;
 import cz.metacentrum.perun.core.api.AttributeDefinition;
 import cz.metacentrum.perun.core.api.AttributesManager;
 import cz.metacentrum.perun.core.api.AuthzResolver;
@@ -182,6 +181,15 @@ public class SearcherEntry implements Searcher {
 		return getPerunBl().getSearcherBl().getMembersByGroupExpiration(sess, group, operator, date);
 	}
 
+	@Override
+	public Map perunql(PerunSession sess, String query, String variables, String operationName) throws InternalErrorException, PrivilegeException {
+		if (!AuthzResolver.isAuthorized(sess, Role.PERUNADMIN)) {
+			throw new PrivilegeException(sess, "perunql");
+		}
+
+		return getPerunBl().getSearcherBl().perunql(sess, query, variables, operationName);
+	}
+
 	public SearcherBl getSearcherBl() {
 		return this.searcherBl;
 	}
@@ -197,6 +205,5 @@ public class SearcherEntry implements Searcher {
 	public PerunBl getPerunBl() {
 		return this.perunBl;
 	}
-
 
 }
